@@ -5,6 +5,7 @@ dist/
 **/target/
 *.log
 *.class
+__pycache__/
 .idea/
 .vscode/
 *.iml
