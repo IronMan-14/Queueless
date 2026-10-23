@@ -1,0 +1,30 @@
+services:
+  app:
+    environment:
+      QUEUELESS_PUBLIC_ORIGIN: https://${QUEUELESS_DOMAIN:?Set QUEUELESS_DOMAIN}
+    volumes:
+      - ./deployment/context-online.xml:/usr/local/tomcat/conf/context.xml:ro
+  proxy:
+    image: caddy:2.10.2
+    environment:
+      QUEUELESS_DOMAIN: ${QUEUELESS_DOMAIN:?Set QUEUELESS_DOMAIN}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deployment/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on: [app]
+    networks:
+      default:
+        ipv4_address: 172.30.44.10
+    restart: unless-stopped
+volumes:
+  caddy_data:
+  caddy_config:
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 172.30.44.0/24

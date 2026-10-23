@@ -1,0 +1,37 @@
+name: Verify QueueLess
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  mysql-and-clients:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.4.10
+        env:
+          MYSQL_DATABASE: queueless_test
+          MYSQL_USER: queueless
+          MYSQL_PASSWORD: ephemeral-ci-database-password
+          MYSQL_ROOT_PASSWORD: ephemeral-ci-root-password
+        ports: ["3306:3306"]
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1"
+          --health-interval=5s --health-timeout=3s --health-retries=30
+    env:
+      QUEUELESS_TEST_DB_URL: jdbc:mysql://127.0.0.1:3306/queueless_test?connectionTimeZone=UTC
+      QUEUELESS_DB_USER: queueless
+      QUEUELESS_DB_PASSWORD: ephemeral-ci-database-password
+      QUEUELESS_MULTI_PROCESS_TEST: "true"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - run: mvn -B -ntp verify
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-reports
+          path: "**/target/surefire-reports/*"

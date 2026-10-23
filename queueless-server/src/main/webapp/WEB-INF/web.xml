@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd" version="6.0" metadata-complete="true">
+  <display-name>QueueLess</display-name>
+  <listener><listener-class>io.queueless.server.AppListener</listener-class></listener>
+  <filter><filter-name>security</filter-name><filter-class>io.queueless.server.web.SecurityFilter</filter-class></filter>
+  <filter-mapping><filter-name>security</filter-name><url-pattern>/*</url-pattern><dispatcher>REQUEST</dispatcher></filter-mapping>
+  <servlet><servlet-name>api</servlet-name><servlet-class>io.queueless.server.web.ApiServlet</servlet-class><load-on-startup>1</load-on-startup></servlet>
+  <servlet-mapping><servlet-name>api</servlet-name><url-pattern>/api/*</url-pattern></servlet-mapping>
+  <servlet><servlet-name>browser</servlet-name><servlet-class>io.queueless.server.web.BrowserServlet</servlet-class><load-on-startup>1</load-on-startup></servlet>
+  <servlet-mapping><servlet-name>browser</servlet-name><url-pattern>/app</url-pattern><url-pattern>/login</url-pattern><url-pattern>/register</url-pattern><url-pattern>/logout</url-pattern><url-pattern>/command</url-pattern><url-pattern>/history</url-pattern><url-pattern>/appointment-history</url-pattern><url-pattern>/reports</url-pattern></servlet-mapping>
+  <session-config><session-timeout>30</session-timeout><cookie-config><http-only>true</http-only></cookie-config><tracking-mode>COOKIE</tracking-mode></session-config>
+  <welcome-file-list><welcome-file>index.jsp</welcome-file></welcome-file-list>
+  <error-page><error-code>404</error-code><location>/WEB-INF/views/not-found.jsp</location></error-page>
+</web-app>

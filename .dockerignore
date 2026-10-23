@@ -1,0 +1,7 @@
+.git
+dist
+.tools
+.local
+**/target
+.env
+*.log

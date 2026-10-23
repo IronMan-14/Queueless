@@ -1,0 +1,5 @@
+{$QUEUELESS_DOMAIN} {
+    encode zstd gzip
+    redir / /queueless/app
+    reverse_proxy app:8080
+}

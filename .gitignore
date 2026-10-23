@@ -1,0 +1,10 @@
+.tools/
+.local/
+dist/
+.env
+**/target/
+*.log
+*.class
+.idea/
+.vscode/
+*.iml
