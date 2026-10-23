@@ -1,8 +1,9 @@
 # Retry Oracle's saved QueueLess stack
 
-The `Oracle capacity retry` GitHub workflow is staged **disabled**. It can check
-the saved Hyderabad stack hourly without leaving a computer on. It does not
-install QueueLess after provisioning the server.
+The `Oracle capacity retry` GitHub workflow can check the saved Hyderabad stack
+hourly without leaving a computer on. Scheduling is controlled by the workflow's
+enabled state and the `OCI_CAPACITY_RETRY_ENABLED` repository variable. It does
+not install QueueLess after provisioning the server.
 
 ## Before enabling
 
@@ -44,5 +45,6 @@ install QueueLess after provisioning the server.
 - Scheduled checks consume GitHub Actions minutes. Review the repository's
   Actions usage; capacity and hourly execution timing are not guaranteed.
 
-Credentials are not configured and the stack has not yet been inspected from
-this workspace. No live deployment or successful provisioning is claimed.
+Read-only inspection verifies API access and the configuration digest. An apply
+job must succeed before provisioning is considered complete; saving or enabling
+the workflow alone does not establish that a server exists.
