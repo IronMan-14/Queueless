@@ -36,6 +36,20 @@ class CapacityRetryTests(unittest.TestCase):
         self.assertEqual(retry.decision([job("FAILED"), job("SUCCEEDED")], logs), "done")
         logs.assert_not_called()
 
+    def test_resource_manager_timestamped_capacity_log(self):
+        lines = [
+            "[ERROR] Error: 500-InternalError, Out of host capacity.",
+            "[INFO] Suggestion: The service for this resource encountered an error.",
+            "[INFO]   with oci_core_instance.generated_oci_core_instance,",
+            '[INFO]   on main.tf line 3, in resource "oci_core_instance":',
+        ]
+        log = "\n".join("2026/10/23 17:21:39[TERRAFORM_CONSOLE] " + line for line in lines)
+        self.assertTrue(retry.capacity_only(log))
+        self.assertEqual(retry.decision([job("FAILED")], lambda _: log), "attempt")
+        mixed = log + "\n2026/10/23 17:21:39[TERRAFORM_CONSOLE] [ERROR] Error: Invalid public key\n"
+        self.assertFalse(retry.capacity_only(mixed))
+        self.assertEqual(retry.decision([job("FAILED")], lambda _: mixed), "halt")
+
     def test_any_active_job_prevents_a_second_submission(self):
         for state in retry.ACTIVE:
             self.assertEqual(retry.decision([job(state, "PLAN")], Mock()), "busy")

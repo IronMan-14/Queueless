@@ -35,6 +35,12 @@ def stack_digest(archive, stack):
 def capacity_only(log):
     """Require every Terraform error to be an instance-capacity error."""
     clean = re.sub(r"\x1b\[[0-9;]*m", "", log)
+    # Resource Manager prefixes every Terraform line with a timestamp and level.
+    # Strip that wrapper before looking for Terraform's error-block boundaries.
+    clean = re.sub(
+        r"(?m)^\d{4}/\d{2}/\d{2} \d{2}:\d{2}:\d{2}"
+        r"\[TERRAFORM_CONSOLE\]\s+\[[A-Z]+\] ?", "", clean,
+    )
     clean = re.sub(r"(?m)^\s*│\s?", "", clean)
     errors = re.split(r"(?m)^\s*Error:\s*", clean)[1:]
     return bool(errors) and all(
