@@ -1,3 +1,4 @@
+# Build and test the Java server and desktop client against an isolated database.
 name: Verify QueueLess
 on: [push, pull_request, workflow_dispatch]
 permissions:
